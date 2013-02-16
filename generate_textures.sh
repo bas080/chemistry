@@ -1,5 +1,5 @@
 #!/bin/bash
-base="elements"
+base="textures"
 mkdir $base
 while read element; do
   elementCode=`echo $element | grep -oP "[a-zA-Z]{1,3}"`
