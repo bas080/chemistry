@@ -3,6 +3,7 @@
 local groups = {
   {"alkali metals",{
   
+    {"H",1,1,1},
     {"Li",1,2,3},
     {"Na",1,3,11},
     {"K" ,1,4,19},
