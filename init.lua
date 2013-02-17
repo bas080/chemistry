@@ -1,4 +1,9 @@
 --element format = {"El",<group>,<period>}
+chemistry={}
+chemistry.reaction=0
+chemistry.reactions={}
+chemistry.extraction=0
+chemistry.extractions={}
 
 local groups = {
   {"alkali metals",{
@@ -132,20 +137,86 @@ local groups = {
     {"Xe" ,18,5,54},
     {"Rn" ,18,6,86},
     {"Uuo",18,7,118},
-  
-  }}
-  
-}
 
+  }}
+}
  
 for i, group in ipairs(groups) do
-  --print(i.." "..group[1])
   for ii, element in ipairs(group[2]) do
-    print(element[1].." "..element[4])
+    --print(element[1].." "..element[4])
     minetest.register_node("chemistry:"..element[1], {
       description = element[1],
       tiles = {element[1]..".png"},
-      groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,wool=1},
+      inventory_image = element[1]..".png",
+      groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
     })
   end
+end
+
+minetest.register_node("chemistry:extractor", {
+  description = "Chemical extractor",
+  tiles = {"chemistry_base.png", "chemistry_base.png", "extractor.png"},
+  inventory_image = "extractor.png",
+  groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
+})
+
+minetest.register_node("chemistry:reactor", {
+  description = "Chemical reactor",
+  tiles = {"chemistry_base.png", "chemistry_base.png", "reactor.png"},
+  inventory_image = "reactor.png",
+  groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
+  on_construct = function(pos)
+    local walk = 1
+    walk_node = minetest.env:get_node({x=pos.x+walk, y=pos.y, z=pos.z})
+    while minetest.get_item_group(walk_node.name, "chemistry") ~= 0 do
+      print(walk)
+      for i, reaction in ipairs(chemistry.reactions) do
+        
+      end
+      walk = walk+1
+      walk_node = minetest.env:get_node({x=pos.x+walk, y=pos.y, z=pos.z})
+    end
+  end,
+})
+
+minetest.register_node("chemistry:and", {
+  description = "+",
+  tiles = {"chemistry_base.png", "chemistry_base.png", "chemistry_and.png"},
+  inventory_image = "chemistry_and.png",
+  groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
+})
+
+
+
+function chemistry.register_reaction(reaction)
+  chemistry.reaction=chemistry.reaction+1
+  chemistry.reactions[chemistry.reaction]=reaction
+end
+
+function chemistry.register_extraction(extraction)
+  chemistry.extractions[chemistry.extractions]=extraction
+  print(extraction[1])
+  chemistry.extraction=chemistry.extraction+1
+end
+
+chemistry:register_reaction({"default:water_source", 
+  {{"H",2},{"H",2}},
+  {{"O",2}},
+})
+
+chemistry:register_reaction({"default:water_source", 
+  {{"H",2},{"H",2}},
+  {{"O",3}},
+})
+
+function copytable(t)
+    local copy = {}
+    for key,val in pairs(t) do
+        if type(val) == 'table' then
+            copy[key] = copytable(val)
+        else
+            copy[key] = val
+        end
+    end
+    return copy
 end
