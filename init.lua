@@ -175,7 +175,12 @@ minetest.register_node("chemistry:reactor", {
     local node_name = minetest.env:get_node({x=pos.x+atom, y=pos.y+numb, z=pos.z}).name
     
     while true do
-      print("---")
+      
+      if node_name == "air" then
+        print("---")
+        return
+      end
+      
       node_name = minetest.env:get_node({x=pos.x+atom, y=pos.y+numb, z=pos.z}).name
       if node_name == "air" then
         atom = atom + 1
@@ -183,42 +188,53 @@ minetest.register_node("chemistry:reactor", {
         node_name = minetest.env:get_node({x=pos.x+atom, y=pos.y+numb, z=pos.z}).name
       end
       
-      if node_name == "air" then
-        print("air")
-        if type(candidates[1]) ~= nil then
-          if type(candidates[1][1]) == "string" then
-            minetest.env:set_node({x=pos.x-1, y=pos.y, z=pos.z}, {name=candidates[1][1]})
+      
+      
+      if candidate == 1 then
+        local count = 0
+        local max = 0
+        for xx in ipairs(candidates[1]) do
+          if xx > 1 then
+            for yy in ipairs(candidates[1][xx]) do
+              max = max + 1
+              node_name = minetest.env:get_node({x=pos.x+xx-1, y=pos.y+yy-1, z=pos.z}).name
+              if node_name == candidates[1][xx][yy] then
+                count = count + 1
+                
+              end
+            end
+            
           end
+          
+        end
+        if count == max then
+          minetest.env:set_node({x=pos.x-1, y=pos.y, z=pos.z}, {name=candidates[1][1]})
         end
         return
       end
       
-      candidate = 0
+      candidate = 0 
+      print(node_name)
       for reaction in ipairs(candidates) do
-        --print(candidate..reaction)
-        --print(candidate.." - "..(atom+1).." - "..(numb+1))
-        local a = candidates[reaction][atom+1][numb+1]
-        
-        if type(a) == "string" then
-        
-          --print(a.." - "..node_name)
-          
+          local a = tostring(candidates[reaction][atom+1][numb+1])
           if a == node_name then
             candidate = candidate+1
             candidates[candidate] = candidates[reaction]
-            print(reaction.." > "..candidate)
+            --print(reaction.." > "..candidate)
           end
-          
           --print(candidates[candidate][1])
-          
           if candidate < reaction then
-            candidates[reaction] = nil
+            if candidate == 0 then
+              
+            else
+              candidates[reaction] = nil
+            end
           end
-        end
+        
       end
       
-      print(candidate)
       if candidate == 0 then
+        --print("none")
         return
       end
       
@@ -245,14 +261,13 @@ function chemistry.register_extraction(extraction)
   chemistry.extractions[chemistry.extractions]=extraction
   chemistry.extraction=chemistry.extraction+1
 end
-
+  
 chemistry:register_reaction({"default:water_source",
   {"chemistry:O", "chemistry:O"},
   {"chemistry:and"},
   {"chemistry:H", "chemistry:H"},
   {"chemistry:H", "chemistry:H"},
 })
-
 
 chemistry:register_reaction({"default:sand",
   {"chemistry:Ba", "chemistry:Ba"},
@@ -262,11 +277,12 @@ chemistry:register_reaction({"default:sand",
   {"chemistry:Si", "chemistry:Si"},
 })
 
-chemistry:register_reaction({"default:lava_source",
-  {"chemistry:O", "chemistry:O"},
-  {"chemistry:and"},
-  {"chemistry:H", "chemistry:H"},
-  {"chemistry:He"},
+chemistry:register_reaction({"default:stone_with_coal",
+  {"chemistry:C", "chemistry:C"},
+})
+
+chemistry:register_reaction({"default:stone_with_coal",
+  {"chemistry:Au", "chemistry:Au"},
 })
 
 function deepcopy(t)
