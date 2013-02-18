@@ -166,16 +166,66 @@ minetest.register_node("chemistry:reactor", {
   inventory_image = "reactor.png",
   groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
   on_construct = function(pos)
-    local walk = 1
-    walk_node = minetest.env:get_node({x=pos.x+walk, y=pos.y, z=pos.z})
-    while minetest.get_item_group(walk_node.name, "chemistry") ~= 0 do
-      print(walk)
-      for i, reaction in ipairs(chemistry.reactions) do
-        
+    print("start reactions")
+    local numb = 0
+    local atom = 1
+    local candidates = deepcopy(chemistry.reactions)
+    local candidate = 0
+    local match = ""
+    local node_name = minetest.env:get_node({x=pos.x+atom, y=pos.y+numb, z=pos.z}).name
+    
+    while true do
+      print("---")
+      node_name = minetest.env:get_node({x=pos.x+atom, y=pos.y+numb, z=pos.z}).name
+      if node_name == "air" then
+        atom = atom + 1
+        numb = 0
+        node_name = minetest.env:get_node({x=pos.x+atom, y=pos.y+numb, z=pos.z}).name
       end
-      walk = walk+1
-      walk_node = minetest.env:get_node({x=pos.x+walk, y=pos.y, z=pos.z})
+      
+      if node_name == "air" then
+        print("air")
+        if type(candidates[1]) ~= nil then
+          if type(candidates[1][1]) == "string" then
+            minetest.env:set_node({x=pos.x-1, y=pos.y, z=pos.z}, {name=candidates[1][1]})
+          end
+        end
+        return
+      end
+      
+      candidate = 0
+      for reaction in ipairs(candidates) do
+        --print(candidate..reaction)
+        --print(candidate.." - "..(atom+1).." - "..(numb+1))
+        local a = candidates[reaction][atom+1][numb+1]
+        
+        if type(a) == "string" then
+        
+          --print(a.." - "..node_name)
+          
+          if a == node_name then
+            candidate = candidate+1
+            candidates[candidate] = candidates[reaction]
+            print(reaction.." > "..candidate)
+          end
+          
+          --print(candidates[candidate][1])
+          
+          if candidate < reaction then
+            candidates[reaction] = nil
+          end
+        end
+      end
+      
+      print(candidate)
+      if candidate == 0 then
+        return
+      end
+      
+      numb = numb + 1
+      
     end
+    
   end,
 })
 
@@ -186,37 +236,49 @@ minetest.register_node("chemistry:and", {
   groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
 })
 
-
-
-function chemistry.register_reaction(reaction)
+function chemistry:register_reaction(reaction)
   chemistry.reaction=chemistry.reaction+1
   chemistry.reactions[chemistry.reaction]=reaction
 end
 
 function chemistry.register_extraction(extraction)
   chemistry.extractions[chemistry.extractions]=extraction
-  print(extraction[1])
   chemistry.extraction=chemistry.extraction+1
 end
 
-chemistry:register_reaction({"default:water_source", 
-  {{"H",2},{"H",2}},
-  {{"O",2}},
+chemistry:register_reaction({"default:water_source",
+  {"chemistry:O", "chemistry:O"},
+  {"chemistry:and"},
+  {"chemistry:H", "chemistry:H"},
+  {"chemistry:H", "chemistry:H"},
 })
 
-chemistry:register_reaction({"default:water_source", 
-  {{"H",2},{"H",2}},
-  {{"O",3}},
+
+chemistry:register_reaction({"default:sand",
+  {"chemistry:Ba", "chemistry:Ba"},
 })
 
-function copytable(t)
-    local copy = {}
-    for key,val in pairs(t) do
-        if type(val) == 'table' then
-            copy[key] = copytable(val)
-        else
-            copy[key] = val
-        end
-    end
-    return copy
+chemistry:register_reaction({"default:sand",
+  {"chemistry:Si", "chemistry:Si"},
+})
+
+chemistry:register_reaction({"default:lava_source",
+  {"chemistry:O", "chemistry:O"},
+  {"chemistry:and"},
+  {"chemistry:H", "chemistry:H"},
+  {"chemistry:He"},
+})
+
+function deepcopy(t)
+if type(t) ~= 'table' then return t end
+local mt = getmetatable(t)
+local res = {}
+for k,v in pairs(t) do
+if type(v) == 'table' then
+v = deepcopy(v)
+end
+res[k] = v
+end
+setmetatable(res,mt)
+return res
 end
