@@ -152,7 +152,7 @@ end
 
 minetest.register_node("chemistry:extractor", {
   description = "Chemical extractor",
-  tiles = {"chemistry_base.png", "chemistry_base.png", "extractor.png"},
+  tiles = {"chemistry_base.png", "chemistry_base.png", "chemistry_base.png", "chemistry_base.png", "extractor.png", "reactor.png"},
   inventory_image = "extractor.png",
   groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
   on_punch = function(pos)
