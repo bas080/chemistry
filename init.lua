@@ -161,6 +161,7 @@ minetest.register_node("chemistry:extractor", {
     for reaction in ipairs(chemistry.reactions) do
       name = chemistry.reactions[reaction][1]
       if name == node_name then
+        minetest.env:set_node(pos,{name="chemistry:reactor"})
         minetest.env:remove_node({x=pos.x-1, y=pos.y, z=pos.z})
         for xx in ipairs(chemistry.reactions[reaction]) do
           if xx > 1 then
@@ -228,7 +229,7 @@ minetest.register_node("chemistry:reactor", {
             end
           end
         end
-        
+        minetest.env:set_node(pos,{name="chemistry:extractor"})
         return
       end
       
@@ -270,7 +271,22 @@ function chemistry:register_reaction(reaction)
   chemistry.reaction=chemistry.reaction+1
   chemistry.reactions[chemistry.reaction]=reaction
 end
-  
+
+function deepcopy(t)
+if type(t) ~= 'table' then return t end
+local mt = getmetatable(t)
+local res = {}
+for k,v in pairs(t) do
+if type(v) == 'table' then
+v = deepcopy(v)
+end
+res[k] = v
+end
+setmetatable(res,mt)
+return res
+end
+
+--CHEMICAL CRAFTS
 chemistry:register_reaction({"default:water_source",
   {"chemistry:O", "chemistry:O"},
   {"chemistry:and"},
@@ -286,16 +302,14 @@ chemistry:register_reaction({"default:stone_with_coal",
   {"chemistry:C", "chemistry:C"},
 })
 
-function deepcopy(t)
-if type(t) ~= 'table' then return t end
-local mt = getmetatable(t)
-local res = {}
-for k,v in pairs(t) do
-if type(v) == 'table' then
-v = deepcopy(v)
-end
-res[k] = v
-end
-setmetatable(res,mt)
-return res
-end
+chemistry:register_reaction({"moreores:gold_block",
+  {"chemistry:Au", "chemistry:Au"},
+})
+
+chemistry:register_reaction({"moreores:silver_block",
+  {"chemistry:Sg", "chemistry:Sg"},
+})
+
+chemistry:register_reaction({"default:stone_with_iron",
+  {"chemistry:Fe", "chemistry:Fe"},
+})
