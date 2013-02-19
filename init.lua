@@ -156,12 +156,13 @@ minetest.register_node("chemistry:extractor", {
   inventory_image = "extractor.png",
   groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
   on_punch = function(pos)
+    minetest.env:set_node(pos,{name="chemistry:reactor"})
     
     local node_name = minetest.env:get_node({x=pos.x-1, y=pos.y, z=pos.z}).name
     for reaction in ipairs(chemistry.reactions) do
       name = chemistry.reactions[reaction][1]
       if name == node_name then
-        minetest.env:set_node(pos,{name="chemistry:reactor"})
+        
         minetest.env:remove_node({x=pos.x-1, y=pos.y, z=pos.z})
         for xx in ipairs(chemistry.reactions[reaction]) do
           if xx > 1 then
@@ -184,6 +185,7 @@ minetest.register_node("chemistry:reactor", {
   inventory_image = "reactor.png",
   groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
   on_punch = function(pos)
+    minetest.env:set_node(pos,{name="chemistry:extractor"})
     local numb = 0
     local atom = 1
     local candidates = deepcopy(chemistry.reactions)
@@ -229,7 +231,6 @@ minetest.register_node("chemistry:reactor", {
             end
           end
         end
-        minetest.env:set_node(pos,{name="chemistry:extractor"})
         return
       end
       
