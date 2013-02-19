@@ -152,7 +152,7 @@ end
 
 minetest.register_node("chemistry:extractor", {
   description = "Chemical extractor",
-  tiles = {"chemistry_base.png", "chemistry_base.png", "chemistry_base.png", "chemistry_base.png", "extractor.png", "reactor.png"},
+  tiles = {"extractor_sign.png", "chemistry_base.png", "chemistry_base.png", "chemistry_base.png", "extractor.png", "reactor.png"},
   inventory_image = "extractor.png",
   groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
   on_punch = function(pos)
@@ -181,7 +181,7 @@ minetest.register_node("chemistry:extractor", {
 
 minetest.register_node("chemistry:reactor", {
   description = "Chemical reactor",
-  tiles = {"chemistry_base.png", "chemistry_base.png", "chemistry_base.png", "chemistry_base.png", "reactor.png", "extractor.png"},
+  tiles = {"reactor_sign.png", "chemistry_base.png", "chemistry_base.png", "chemistry_base.png", "reactor.png", "extractor.png"},
   inventory_image = "reactor.png",
   groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
   on_punch = function(pos)
