@@ -8,7 +8,7 @@
 
 BY:             bas080
 DESCRIPTION:    Get to know the world of matter
-VERSION:        0.1
+VERSION:        0.3
 LICENSE:        WTFPL
 FORUM:          http://forum.minetest.net/viewtopic.php?pid=69829
 
