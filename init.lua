@@ -2,6 +2,11 @@ chemistry={}
 chemistry.reaction=0
 chemistry.reactions={}
 
+function chemistry:register_reaction(reaction)
+  chemistry.reaction=chemistry.reaction+1
+  chemistry.reactions[chemistry.reaction]=reaction
+end
+
 dofile(minetest.get_modpath("chemistry").."/crafts.lua")
 
 local groups = {
@@ -268,11 +273,6 @@ minetest.register_node("chemistry:and", {
   inventory_image = "chemistry_and.png",
   groups = {snappy=2,choppy=2,oddly_breakable_by_hand=3,flammable=3,chemistry=1},
 })
-
-function chemistry:register_reaction(reaction)
-  chemistry.reaction=chemistry.reaction+1
-  chemistry.reactions[chemistry.reaction]=reaction
-end
 
 function deepcopy(t)
 if type(t) ~= 'table' then return t end
