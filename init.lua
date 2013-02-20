@@ -2,7 +2,7 @@ chemistry={}
 chemistry.reaction=0
 chemistry.reactions={}
 
-dofile(minetest.get_modpath("chess").."/crafts.lua")
+dofile(minetest.get_modpath("chemistry").."/crafts.lua")
 
 local groups = {
   {"alkali metals",{
