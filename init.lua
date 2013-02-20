@@ -1,7 +1,8 @@
---element format = {"El",<group>,<period>}
 chemistry={}
 chemistry.reaction=0
 chemistry.reactions={}
+
+dofile(minetest.get_modpath("chess").."/crafts.lua")
 
 local groups = {
   {"alkali metals",{
@@ -286,31 +287,3 @@ end
 setmetatable(res,mt)
 return res
 end
-
---CHEMICAL CRAFTS
-chemistry:register_reaction({"default:water_source",
-  {"chemistry:O", "chemistry:O"},
-  {"chemistry:and"},
-  {"chemistry:H", "chemistry:H"},
-  {"chemistry:H", "chemistry:H"},
-})
-
-chemistry:register_reaction({"default:sand",
-  {"chemistry:Si", "chemistry:Si"},
-})
-
-chemistry:register_reaction({"default:stone_with_coal",
-  {"chemistry:C", "chemistry:C"},
-})
-
-chemistry:register_reaction({"moreores:gold_block",
-  {"chemistry:Au", "chemistry:Au"},
-})
-
-chemistry:register_reaction({"moreores:silver_block",
-  {"chemistry:Sg", "chemistry:Sg"},
-})
-
-chemistry:register_reaction({"default:stone_with_iron",
-  {"chemistry:Fe", "chemistry:Fe"},
-})
