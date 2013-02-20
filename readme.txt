@@ -48,6 +48,7 @@ Changelog
 0.4
 * Supports moreores mod (blocks)
 * Supports diamonds mod (blocks)
+* Made seperate crafts lua
 
 0.3
 * Extractor changes nodes into atoms
